@@ -32,6 +32,9 @@ Apos instalar o esptool basta rodar o seguinte comando:
 
 esptool.py --chip ESP32 --port <Caminho_da_porta> erase_flash 
 
+## Considerações
+Fork da biblioteca esp32-ps3 com melhorias na desconexão  
+https://github.com/RomanLut/esp32-ps3/tree/1.0.0_with_reconnect_fixed
 ## Fontes
 
 arduino-esp32 : https://github.com/espressif/arduino-esp32
