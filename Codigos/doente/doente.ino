@@ -92,7 +92,7 @@
     // Multiplicadcor = 1.8 para aumentar a velocidade linear, o quao rapido o robo vai ser
     // Multiplicadcor2 = multiplic_curva, parametro que varia de 1 ate a 2.3 para suavisar as curvas em alta velocidade
       if(PS4.LStickY()<-15 || PS4.LStickY()>15){
-        float multiplic_curva = map(PS4.LStickY(), -124, 125, 1, 2.3);
+        float multiplic_curva = map(abs(PS4.LStickY()), 0, 124, 1, 2.3);
         motors_control(1.8*inv*PS4.LStickY(), (-1)*PS4.RStickX()/multiplic_curva);
       }else { // Controle sobre valores pequenos devido a problemas na funcao map
         motors_control(1.8*inv*PS4.LStickY(), (-1)*PS4.RStickX());
