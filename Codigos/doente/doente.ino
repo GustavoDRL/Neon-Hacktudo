@@ -95,17 +95,17 @@
         float multiplic_curva = map(abs(PS4.LStickY()), 0, 124, 1, 2.3);
         motors_control(1.8*inv*PS4.LStickY(), (-1)*PS4.RStickX()/multiplic_curva);
       }else { // Controle sobre valores pequenos devido a problemas na funcao map
-        motors_control(1.8*inv*PS4.LStickY(), (-1)*PS4.RStickX());
+        motors_control(1.8*inv*PS4.LStickY(), PS4.RStickX());
       }
       
         //Sentido de locomocao invertido
        if(PS4.R3()){
-          inv = -1;
+          inv = 1;
           delay(100);
        }
        //Sentido de locomocao principal
         if(PS4.L3()){
-          inv = 1;
+          inv = -1;
           delay(100);
        }
        
