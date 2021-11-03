@@ -2,15 +2,15 @@
   #include <PS4Controller.h>
  
   //Locomocão 
-  #define PWMA 27
-  #define PWMB 26
-  #define A1  13
-  #define A2  12
-  #define B1  25
-  #define B2  33
+  #define PWMB 27
+  #define PWMA 26
+  #define B1  13
+  #define B2  12
+  #define A2  25
+  #define A1  33
 
   
-  int inv = 1; //Permite inverter a pilotagem conforme o lado do robo que esta para cima
+  int inv = -1; //Permite inverter a pilotagem conforme o lado do robo que esta para cima
   
   void motors_control(int linear, int angular) {
     int result_R = linear - angular; //ao somar o angular com linear em cada motor conseguimos a ideia de direcao do robo
@@ -19,10 +19,10 @@
     if(result_R<15 && result_R >-15) result_R=0; 
     if(result_L<15 && result_L >-15 ) result_L=0;
     //Não permite valores superiores a 255 ou inferiores a -255
-    if(result_R >255 ) result_R= 254; 
-    if(result_R<-255 ) result_R=-254;
-    if(result_L >255 ) result_L= 254;
-    if(result_L<-255 ) result_L=-254;  
+    if(result_R >=255 ) result_R= 254; 
+    if(result_R<=-255 ) result_R=-254;
+    if(result_L >=255 ) result_L= 254;
+    if(result_L<=-255 ) result_L=-254;  
     
     //manda para a funcao motor um valor de -255 a 255, o sinal signifca a direcao  
     motor_A(result_R); 
@@ -39,6 +39,7 @@
     }
     ledcWrite(5,abs(speedA));
 
+
   }
   
   void motor_B(int speedB){
@@ -50,9 +51,7 @@
       digitalWrite(B2, 1);
     }
     ledcWrite(6,abs(speedB));
-    Serial.println("speedB");
-    Serial.println(speedB);
-    delay(100);
+
   }
   
   
@@ -62,7 +61,7 @@
       delay(10); // will pause Zero, Leonardo, etc until serial console opens
   
   
-    PS4.begin("00:e0:4c:65:4d:0f");
+    PS4.begin("1c:bf:c0:fa:8b:4a");
     Serial.println("Ready.");
     
     ledcAttachPin(PWMA,5);
@@ -91,13 +90,11 @@
     //motors_control(linear_speed*multiplicador, angular_speed* multiplicador2);
     // Multiplicadcor = 1.8 para aumentar a velocidade linear, o quao rapido o robo vai ser
     // Multiplicadcor2 = multiplic_curva, parametro que varia de 1 ate a 2.3 para suavisar as curvas em alta velocidade
-      if(PS4.LStickY()<-15 || PS4.LStickY()>15){
-        float multiplic_curva = map(abs(PS4.LStickY()), 0, 124, 1, 2.3);
-        motors_control(1.8*inv*PS4.LStickY(), (-1)*PS4.RStickX()/multiplic_curva);
-      }else { // Controle sobre valores pequenos devido a problemas na funcao map
-        motors_control(1.8*inv*PS4.LStickY(), PS4.RStickX());
-      }
-      
+
+        int curva = map(abs(PS4.LStickY()), 0, 127, 80, 190);
+        float multiplic_curva = (float) curva/100;
+        motors_control(inv*PS4.LStickY(), -1*PS4.RStickX()/multiplic_curva);
+
         //Sentido de locomocao invertido
        if(PS4.R3()){
           inv = 1;

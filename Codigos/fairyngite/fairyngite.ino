@@ -55,9 +55,7 @@
       digitalWrite(B2, 1);
     }
     ledcWrite(6,abs(speedB));
-    Serial.println("speedB");
-    Serial.println(speedB);
-    delay(100);
+
   }
   
   
@@ -100,10 +98,13 @@
     // Multiplicadcor = 1.8 para aumentar a velocidade linear, o quao rapido o robo vai ser
     // Multiplicadcor2 = multiplic_curva, parametro que varia de 1 ate a 2.3 para suavisar as curvas em alta velocidade
       if(PS4.LStickY()<-15 || PS4.LStickY()>15){
-        float multiplic_curva = map(PS4.LStickY(), -124, 125, 1, 2.3);
+        int curva = map(abs(PS4.LStickY()), 0, 127, 80, 190);
+        float multiplic_curva = (float) curva/100;
         motors_control(1.8*inv*PS4.LStickY(), (-1)*PS4.RStickX()/multiplic_curva);
+
       }else { // Controle sobre valores pequenos devido a problemas na funcao map
-        motors_control(1.8*inv*PS4.LStickY(), (-1)*PS4.RStickX());
+        motors_control(1.8*inv*PS4.LStickY(), (-1)*PS4.RStickX()/0.8);
+
       }
       
       //inicio do Brushless 
@@ -137,13 +138,12 @@
        //Controle da rotacao do brushless
        }else if(PS4.R2()){ 
           if(PS4.R2Value()>15){
-            angle = map(PS4.R2Value(), 0, 255, 20, 140);
+            angle = map(PS4.R2Value(), 0, 255, 20, 105);
           }else{
             angle = 40;
           }
                   
           servo.write(angle);
-          Serial.println(angle);
        }   
     }
      
