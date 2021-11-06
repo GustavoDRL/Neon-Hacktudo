@@ -4,10 +4,10 @@
   //Locomocão 
   #define PWMB 27
   #define PWMA 26
-  #define A1  12
-  #define A2  13
-  #define B1  25
-  #define B2  33
+  #define B1  12
+  #define B2  13
+  #define A1  25
+  #define A2  33
   
   //brushless
   #include <Servo_ESP32.h>
@@ -98,12 +98,12 @@ PS4.begin("e7:f1:77:b0:8e:0a");
     // Multiplicadcor = 1.8 para aumentar a velocidade linear, o quao rapido o robo vai ser
     // Multiplicadcor2 = multiplic_curva, parametro que varia de 1 ate a 2.3 para suavisar as curvas em alta velocidade
       if(PS4.LStickY()<-15 || PS4.LStickY()>15){
-        int curva = map(abs(PS4.LStickY()), 0, 127, 80, 200);
+        int curva = map(abs(PS4.LStickY()), 0, 127, 50, 100);
         float multiplic_curva = (float) curva/100;
-        motors_control(1.8*inv*PS4.LStickY(), PS4.RStickX()/multiplic_curva);
+        motors_control(1.8*inv*PS4.LStickY(), (-1)*PS4.RStickX()/multiplic_curva);
 
       }else { // Controle sobre valores pequenos devido a problemas na funcao map
-        motors_control(1.8*inv*PS4.LStickY(), PS4.RStickX()/0.8);
+        motors_control(1.8*inv*PS4.LStickY(), (-1)*PS4.RStickX()/0.8);
 
       }
       

@@ -2,7 +2,7 @@
 
 void setup(void) {
   Serial.begin(115200);
-  PS4.begin("F8:28:19:99:3f:30");
+  PS4.begin("E7:F1:77:B0:8E:0A");
   Serial.println("Ready.");
 }
 

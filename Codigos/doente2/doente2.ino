@@ -8,10 +8,15 @@
   #define B2  12
   #define A2  25
   #define A1  33
+  
+  //brushless
+  #include <Servo_ESP32.h>
+  static const int brushPin = 14; 
+  Servo_ESP32 servo;
+  int angle;
 
   
   int inv = -1; //Permite inverter a pilotagem conforme o lado do robo que esta para cima
-  
   void motors_control(int linear, int angular) {
     int result_R = linear - angular; //ao somar o angular com linear em cada motor conseguimos a ideia de direcao do robo
     int result_L = linear + angular;
@@ -21,7 +26,7 @@
     //Não permite valores superiores a 255 ou inferiores a -255
     if(result_R >255 ) result_R= 254; 
     if(result_R<-255 ) result_R=-254;
-    if(result_L>255 ) result_L= 254;
+    if(result_L >255 ) result_L= 254;
     if(result_L<-255 ) result_L=-254;  
     
     //manda para a funcao motor um valor de -255 a 255, o sinal signifca a direcao  
@@ -38,7 +43,6 @@
       digitalWrite(A2, 1);
     }
     ledcWrite(5,abs(speedA));
-
 
   }
   
@@ -61,7 +65,7 @@
       delay(10); // will pause Zero, Leonardo, etc until serial console opens
   
   
-    PS4.begin("00:e0:4c:65:4d:0f");
+    PS4.begin("1c:bf:c0:fa:8b:4a");
     Serial.println("Ready.");
     
     ledcAttachPin(PWMA,5);
@@ -80,6 +84,9 @@
     digitalWrite(B1, 0);
     digitalWrite(B2, 0);
   
+   servo.attach(brushPin);
+   int angle = 0;
+   servo.write(angle);
    while(PS4.isConnected()!= true){
     delay(20);}
   }
@@ -93,29 +100,60 @@
       if(PS4.LStickY()<-15 || PS4.LStickY()>15){
         int curva = map(abs(PS4.LStickY()), 0, 127, 80, 190);
         float multiplic_curva = (float) curva/100;
-        motors_control(1.8*inv*PS4.LStickY(), (-1)*PS4.RStickX()/multiplic_curva);
+        motors_control(1.9*inv*PS4.LStickY(), (-1)*PS4.RStickX()/multiplic_curva);
 
       }else { // Controle sobre valores pequenos devido a problemas na funcao map
         motors_control(1.8*inv*PS4.LStickY(), (-1)*PS4.RStickX()/0.8);
 
       }
+      
+      //inicio do Brushless 
+      if (PS4.Cross()) { 
+          angle=40;
+          servo.write(angle);
+          Serial.println(angle);
+          delay(20);
+      }
         //Sentido de locomocao invertido
        if(PS4.R3()){
-          inv = 1;
+          inv = -1;
           delay(100);
        }
        //Sentido de locomocao principal
         if(PS4.L3()){
-          inv = -1;
+          inv = 1;
           delay(100);
        }
-       
+       //Botao de impacto
+       if(PS4.R1()){
+          //Remove o pino do brushless para girar livremente durante o impacto
+          servo.detach();
+          delay(100);
+          //Apos um dalay adiciona novamente o brushless para a ESC reiniciar
+          servo.attach(brushPin);
+          angle = 40;
+          servo.write(angle);
+          Serial.println(angle);
+        
+       //Controle da rotacao do brushless
+       }else if(PS4.R2()){ 
+          if(PS4.R2Value()>15){
+            angle = map(PS4.R2Value(), 0, 255, 20, 105);
+          }else{
+            angle = 40;
+          }
+                  
+          servo.write(angle);
+       }   
     }
      
     //Failsafe
     if(PS4.isConnected()!= true){
+    angle = 40;
+    servo.write(angle);
     motors_control(0,0);
     Serial.println("Restart");
+    setup();
     delay(20);
     }
     
