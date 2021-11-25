@@ -109,38 +109,29 @@ PS4.begin("e7:f1:77:b0:8e:0a");
       
       //inicio do Brushless 
       if (PS4.Cross()) { 
-          angle=45;
+          angle=60;
           servo.write(angle);
           Serial.println(angle);
           delay(20);
       }
         //Sentido de locomocao invertido
-       if(PS4.R3()){
+       if(PS4.Down()){
           inv = -1;
           delay(100);
        }
        //Sentido de locomocao principal
-        if(PS4.L3()){
+        if(PS4.Up()){
           inv = 1;
           delay(100);
        }
-       //Botao de impacto
-       if(PS4.R1()){
-          //Remove o pino do brushless para girar livremente durante o impacto
-          servo.detach();
-          delay(100);
-          //Apos um dalay adiciona novamente o brushless para a ESC reiniciar
-          servo.attach(brushPin);
-          angle = 45;
-          servo.write(angle);
-          Serial.println(angle);
+
         
        //Controle da rotacao do brushless
-       }else if(PS4.R2()){ 
+       if(PS4.R2()){ 
           if(PS4.R2Value()>15){
-            angle = map(PS4.R2Value(), 0, 255, 35, 125);
+            angle = map(PS4.R2Value(), 0, 255, 60, 110);
           }else{
-            angle = 45;
+            angle = 60;
           }
                   
           servo.write(angle);

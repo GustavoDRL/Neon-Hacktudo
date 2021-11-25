@@ -115,12 +115,12 @@
           delay(20);
       }
         //Sentido de locomocao invertido
-       if(PS4.R3()){
+       if(PS4.Down()){
           inv = -1;
           delay(100);
        }
        //Sentido de locomocao principal
-        if(PS4.L3()){
+        if(PS4.Up()){
           inv = 1;
           delay(100);
        }
