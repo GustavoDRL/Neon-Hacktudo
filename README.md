@@ -25,7 +25,7 @@ sudo apt install python-is-python3
 ##### Windows
 Apos instalar o esptool basta rodar o seguinte comando:
 
-py -3.9 -m esptool --chip ESP32 --port <Porta_da_ESP> erase_flash	
+python3 -m esptool --chip ESP32 --port <Porta_da_ESP> erase_flash	
 
 ##### Linux 
 Apos instalar o esptool basta rodar o seguinte comando:
